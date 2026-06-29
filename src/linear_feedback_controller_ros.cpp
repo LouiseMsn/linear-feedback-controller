@@ -84,9 +84,7 @@ LinearFeedbackControllerRos::on_export_reference_interfaces() {
   std::vector<hardware_interface::CommandInterface> reference_interfaces;
   reference_interfaces.clear();
   for (size_t i = 0; i < reference_interface_names_.size(); ++i) {
-    reference_interfaces.push_back(hardware_interface::CommandInterface(
-        get_node()->get_name(), reference_interface_names_[i],
-        &reference_interfaces_[i]));
+    reference_interfaces.push_back(hardware_interface::CommandInterface(get_node()->get_name(), reference_interface_names_[i], &reference_interfaces_[i]));
   }
   return reference_interfaces;
 }
@@ -207,7 +205,7 @@ return_type LinearFeedbackControllerRos::update_and_write_commands(
                            parameters_.remove_gravity_compensation_effort);
   if (output_joint_effort_.hasNaN()) {
     RCLCPP_ERROR_STREAM(get_node()->get_logger(),
-                        "NaN detect in output joint effort command: "
+                        "NaN detected in output joint effort command: "
                             << output_joint_effort_.transpose());
     return controller_interface::return_type::ERROR;
   }
@@ -568,9 +566,15 @@ bool LinearFeedbackControllerRos::setup_reference_interface() {
     reference_interface_names_.emplace_back(name);
   }
   for (const auto& joint : lfc_.get_robot_model()->get_moving_joint_names()) {
+    // Quick hack to remove the effort output of the torso which does not work
+    if(joint.find("torso_lift_joint") == std::string::npos)
+    {
+
     const auto name = parameters_.chainable_controller.reference_prefix +
                       joint + "/" + HW_IF_EFFORT;
-    reference_interface_names_.emplace_back(name);
+    reference_interface_names_.emplace_back(name); 
+    }
+
   }
   reference_interfaces_.resize(reference_interface_names_.size(),
                                std::numeric_limits<double>::quiet_NaN());
