@@ -257,26 +257,11 @@ bool LinearFeedbackControllerRos::read_state_from_references() {
 
     // Offsets in reference_interfaces_.
     const Eigen::Index offset_base_pose = 0;
-    const Eigen::Index offset_joint_pos = offset_base_pose + base_pose_size; // 7
-    const Eigen::Index offset_base_twist = offset_joint_pos + joint_nv; // 7+14 = 21 
-    const Eigen::Index offset_joint_vel = offset_base_twist + base_twist_size; // 21 + 6 = 27
-    const Eigen::Index offset_joint_eff = offset_joint_vel + joint_nv -1 ; //27+15 = 42 // /!\ removing the torso effort
-    const Eigen::Index expected_size = offset_joint_eff + joint_nv; // 42+15 = 57
-
-    RCLCPP_WARN_STREAM(
-        get_node()->get_logger(),
-        "FREE FLYER\n" <<
-        "offset_joint_pos:"
-            << offset_joint_pos << "\n"<<
-        "offset_base_twist:"
-            << offset_base_twist << "\n"<<
-        "offset_joint_vel:"
-            << offset_joint_vel << "\n"<<
-        "offset_joint_eff:"
-            << offset_joint_eff << "\n"<<
-        "expected_size:"
-            << expected_size << "\n" 
-          );
+    const Eigen::Index offset_joint_pos = offset_base_pose + base_pose_size; 
+    const Eigen::Index offset_base_twist = offset_joint_pos + joint_nv;
+    const Eigen::Index offset_joint_vel = offset_base_twist + base_twist_size; 
+    const Eigen::Index offset_joint_eff = offset_joint_vel + joint_nv -1 ; // TEMP FIX /!\ removing the torso effort
+    const Eigen::Index expected_size = offset_joint_eff + joint_nv; 
 
     if (reference_interfaces_.size() != static_cast<size_t>(expected_size)) {
       RCLCPP_ERROR_STREAM(
@@ -302,21 +287,8 @@ bool LinearFeedbackControllerRos::read_state_from_references() {
     // No free-flyer: only controlled joints.
     const Eigen::Index offset_joint_pos = 0;
     const Eigen::Index offset_joint_vel = offset_joint_pos + joint_nv; 
-    const Eigen::Index offset_joint_eff = offset_joint_vel + joint_nv -1 ; // /!\ removing the torso effort
+    const Eigen::Index offset_joint_eff = offset_joint_vel + joint_nv -1 ; // TEMP FIX /!\ removing the torso effort
     const Eigen::Index expected_size = offset_joint_eff + joint_nv; 
-
-    RCLCPP_WARN_STREAM(
-    get_node()->get_logger(),
-    "NO FREE FLYER\n" <<
-    "offset_joint_pos:"
-        << offset_joint_pos << "\n"<<
-    "offset_joint_vel:"
-        << offset_joint_vel << "\n"<<
-    "offset_joint_eff:"
-        << offset_joint_eff << "\n"<<
-    "expected_size:"
-        << expected_size << "\n" 
-      );
 
     if (reference_interfaces_.size() != static_cast<size_t>(expected_size)) {
       RCLCPP_ERROR_STREAM(
