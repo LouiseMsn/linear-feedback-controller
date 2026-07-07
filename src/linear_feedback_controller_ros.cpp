@@ -565,7 +565,6 @@ bool LinearFeedbackControllerRos::setup_reference_interface() {
     {
       const auto name = parameters_.chainable_controller.reference_prefix +
                         joint + "/" + HW_IF_POSITION;
-      RCLCPP_WARN_STREAM(get_node()->get_logger(),"pos : " << name);
       reference_interface_names_.emplace_back(name);
 
     }
@@ -584,7 +583,6 @@ bool LinearFeedbackControllerRos::setup_reference_interface() {
     {
       const auto name = parameters_.chainable_controller.reference_prefix +
                         joint + "/" + HW_IF_VELOCITY;
-      RCLCPP_WARN_STREAM(get_node()->get_logger(),"vel : " << name);
       reference_interface_names_.emplace_back(name);
 
     }
@@ -595,8 +593,6 @@ bool LinearFeedbackControllerRos::setup_reference_interface() {
     {
       const auto name = parameters_.chainable_controller.reference_prefix +
                         joint + "/" + HW_IF_EFFORT;
-      RCLCPP_WARN_STREAM(get_node()->get_logger(),"eff : " << name);
-
       reference_interface_names_.emplace_back(name);
     }
   }
