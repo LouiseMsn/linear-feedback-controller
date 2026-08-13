@@ -133,8 +133,28 @@ const Eigen::VectorXd& PDController::compute_control(const Eigen::VectorXd& q,
       pinocchio::difference(rmb_->get_model(), q_ref_full, q_full)
           .tail(joint_nv);
 
+  std::stringstream ss;
+  ss << "Tau ref "<<"\n" ;
+  for (float i : tau_ref_) ss << i << "\n";
+
+  ss << "Kp " << "\n" ;
+  for (float i : p_gains_) ss << i << "\n";
+
+  ss << "Err q " << "\n" ;
+  for (float i : error_q) ss << i << "\n";
+
+  ss << "Kd " << "\n" ;
+  for (float i : d_gains_) ss << i << "\n";
+
+  ss << "v " << "\n" ;
+  for (float i : v) ss << i << "\n";
+  
   control_ = tau_ref_.array() - p_gains_.array() * error_q.array() -
              d_gains_.array() * v.array();
+
+  ss << "control " << "\n" ;
+  for (float i : control_) ss << i << "\n";
+  std::cerr << ss.str() << std::endl;
 
   return control_;
 }

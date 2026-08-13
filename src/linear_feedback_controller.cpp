@@ -89,7 +89,6 @@ const Eigen::VectorXd& LinearFeedbackController::compute_control(
       first_control_received_time_ != TimePoint::min();
   const bool during_switch = (time - first_control_received_time_) <
                              params_.pd_to_lf_transition_duration;
-                             
   // Check whenever the first data has arrived and save the time.
   if (control_msg_received && !first_control_received_time_initialized) {
     first_control_received_time_ = time;
