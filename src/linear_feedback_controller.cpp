@@ -211,7 +211,8 @@ const Eigen::VectorXd& LinearFeedbackController::compute_control(
   for (int i : params_.joint_effort_idx)   control_(i) = control_lf_(i);
   for (int i : params_.joint_position_idx) control_(i) = integrated_position_(i);
   for (int i : params_.joint_velocity_idx) control_(i) = integrated_velocity_(i);
-
+  
+  std::stringstream ss;
   ss << "LF control phase" << control_;
   std::cerr << ss.str() << std::endl;
   return control_;
