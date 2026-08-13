@@ -218,7 +218,9 @@ return_type LinearFeedbackControllerRos::update_and_write_commands(
   const auto joint_nv = lfc_.get_robot_model()->get_joint_nv();
   std_msgs::msg::Float64MultiArray msg;
   msg.data.resize(joint_nv);
+
   for (Eigen::Index i = 0; i < joint_nv; ++i) {
+
     msg.data[i] = output_joint_effort_[i];
   }
   debug_publisher_->publish(msg);
@@ -290,6 +292,8 @@ bool LinearFeedbackControllerRos::read_state_from_references() {
     input_sensor_.joint_state.effort = Eigen::VectorXd::Map(
         &reference_interfaces_[offset_joint_eff], joint_nv);
 
+
+
   } else {
     // No free-flyer: only controlled joints.
     const Eigen::Index offset_joint_pos = 0;
@@ -315,6 +319,10 @@ bool LinearFeedbackControllerRos::read_state_from_references() {
     input_sensor_.joint_state.effort = Eigen::VectorXd::Map(
         &reference_interfaces_[offset_joint_eff], joint_nv);
   }
+  //   RCLCPP_INFO_STREAM( 
+  // get_node()->get_logger(),
+  // "output effort interface: "
+  //     <<  input_sensor_.joint_state.effort);
 
   // Ensure that velocity has the correct size.
   if (input_sensor_.joint_state.velocity.size() != joint_nv) {

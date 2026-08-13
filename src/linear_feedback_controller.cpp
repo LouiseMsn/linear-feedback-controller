@@ -89,7 +89,7 @@ const Eigen::VectorXd& LinearFeedbackController::compute_control(
       first_control_received_time_ != TimePoint::min();
   const bool during_switch = (time - first_control_received_time_) <
                              params_.pd_to_lf_transition_duration;
-
+                             
   // Check whenever the first data has arrived and save the time.
   if (control_msg_received && !first_control_received_time_initialized) {
     first_control_received_time_ = time;
@@ -150,7 +150,10 @@ const Eigen::VectorXd& LinearFeedbackController::compute_control(
     for (int i : params_.joint_position_idx) control_(i) = sensor_js.position(i);
     // Velocity joints : zero or same speed
     for (int i : params_.joint_velocity_idx) control_(i) = 0.0;
-
+    
+    std::stringstream ss;
+    ss << "PD control phase\n" << control_;
+    std::cerr << ss.str() << std::endl;
     return control_;
   }
 
@@ -195,6 +198,10 @@ const Eigen::VectorXd& LinearFeedbackController::compute_control(
     for (int i : params_.joint_position_idx) control_(i) = integrated_position_(i);
     for (int i : params_.joint_velocity_idx) control_(i) = integrated_velocity_(i);
     return control_;
+
+    std::stringstream ss;
+    ss << "switch control phase" << control_;
+    std::cerr << ss.str() << std::endl;
   }
 
   // LF Control Phase
@@ -205,6 +212,8 @@ const Eigen::VectorXd& LinearFeedbackController::compute_control(
   for (int i : params_.joint_position_idx) control_(i) = integrated_position_(i);
   for (int i : params_.joint_velocity_idx) control_(i) = integrated_velocity_(i);
 
+  ss << "LF control phase" << control_;
+  std::cerr << ss.str() << std::endl;
   return control_;
 }
 
