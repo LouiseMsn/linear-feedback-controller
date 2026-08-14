@@ -335,18 +335,17 @@ bool LinearFeedbackControllerRos::read_state_from_references() {
       input_sensor_.joint_state.velocity.hasNaN() ||
       input_sensor_.joint_state.effort.hasNaN()) 
   {
-    RCLCPP_ERROR(get_node()->get_logger(), "The joint state must be NaN free.");
+    RCLCPP_WARN_ONCE(get_node()->get_logger(), "The joint state must be NaN free.");
     for (size_t i = 0; i < reference_interfaces_.size(); ++i) 
     {
-      RCLCPP_WARN_ONCE(get_node()->get_logger(), "Nan detected ! ");
-                      // "reference[" << reference_interface_names_[i]
-                      //             << "] = " << reference_interfaces_[i]
-                      //             << ".");
+      RCLCPP_WARN_STREAM_ONCE(get_node()->get_logger(),
+                  "reference[" << reference_interface_names_[i]
+                              << "] = " << reference_interfaces_[i]
+                              << ".");
       
     }
 
-    // For the TiagoPro we ovveride the Nan in the torso with a 0 and continue
-    // return false;
+    // For the TiagoPro specifically we overide the NaN in the torso with a 0 and continue
     for( size_t i = 0; i < input_sensor_.joint_state.effort.size(); i++)
     {
       if (input_sensor_.joint_state.effort[i] != input_sensor_.joint_state.effort[i]){
